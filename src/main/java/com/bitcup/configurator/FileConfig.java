@@ -45,8 +45,10 @@ public class FileConfig {
                     configuration.addConfiguration(pc);
                     logger.info("Loaded non-classpath config file " + fn);
                 } catch (ConfigurationException e) {
-                    logger.error("Config file " + fn + " not found");
+                    logger.warn("Config file " + fn + " not found");
                 }
+            } else {
+                logger.warn("Config file " + fn + " not found");
             }
         }
         // hostname-prefixed filename on classpath
@@ -68,6 +70,9 @@ public class FileConfig {
 
     private void addToCompositeConfig(String filename, boolean logWithThrowable) {
         try {
+            if (logger.isTraceEnabled()) {
+                logger.trace("Attempting to load config file " + filename + " on the classpath...");
+            }
             PropertiesConfiguration pc = new PropertiesConfiguration(filename);
             pc.setReloadingStrategy(getReloadingStrategy());
             configuration.addConfiguration(pc);
