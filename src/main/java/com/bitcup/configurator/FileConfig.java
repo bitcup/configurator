@@ -43,7 +43,7 @@ public class FileConfig {
                     PropertiesConfiguration pc = new PropertiesConfiguration(fileUrl);
                     pc.setReloadingStrategy(getReloadingStrategy());
                     configuration.addConfiguration(pc);
-                    logger.info("Loading config file " + fn);
+                    logger.info("Loaded non-classpath config file " + fn);
                 } catch (ConfigurationException e) {
                     logger.error("Config file " + fn + " not found");
                 }
@@ -74,9 +74,9 @@ public class FileConfig {
             logger.info("Loaded config file " + filename + " on the classpath");
         } catch (ConfigurationException e) {
             if (logWithThrowable) {
-                logger.error("Config file " + filename + " not found on classpath", e);
+                logger.warn("Config file " + filename + " not found on classpath", e);
             } else {
-                logger.error("Config file " + filename + " not found on classpath");
+                logger.warn("Config file " + filename + " not found on classpath");
             }
         }
     }
