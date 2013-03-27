@@ -43,9 +43,9 @@ public class FileConfig {
                     PropertiesConfiguration pc = new PropertiesConfiguration(fileUrl);
                     pc.setReloadingStrategy(getReloadingStrategy());
                     configuration.addConfiguration(pc);
-                    logger.info("Using local config file " + fn);
+                    logger.info("Using configPath-based config file " + fn);
                 } catch (ConfigurationException e) {
-                    logger.error("Could not use local config file " + filename, e);
+                    logger.error("Could not use configPath-based config file " + fn, e);
                 }
             }
         }
@@ -57,7 +57,7 @@ public class FileConfig {
                 configuration.addConfiguration(pc);
                 logger.info("Using hostname-based config file " + fn);
             } catch (ConfigurationException e) {
-                logger.error("Could not use hostname-based config file " + filename, e);
+                logger.error("Could not use hostname-based config file " + fn, e);
             }
         }
         if (Context.getInstance().hasEnv()) {
@@ -68,14 +68,14 @@ public class FileConfig {
                 configuration.addConfiguration(pc);
                 logger.info("Using env-based config file " + fn);
             } catch (ConfigurationException e) {
-                logger.error("Could not use env-based config file " + filename, e);
+                logger.error("Could not use env-based config file " + fn, e);
             }
         }
         try {
             PropertiesConfiguration pc = new PropertiesConfiguration(filename);
             pc.setReloadingStrategy(getReloadingStrategy());
             configuration.addConfiguration(pc);
-            logger.info("Using env-based config file " + filename);
+            logger.info("Using config file " + filename);
         } catch (ConfigurationException e) {
             logger.error("Could not use config file " + filename, e);
         }
