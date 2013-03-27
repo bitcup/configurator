@@ -32,18 +32,13 @@ public class Context {
     }
 
     private Context() {
-        init();
-    }
-
-    private void init() {
         this.configPath = readJVMParam(CONFIG_PATH);
         this.env = readJVMParam(ENV);
-        String hn = readJVMParam(HOST_NAME);
-        if (hn == null) {
-            hn = getLocalHostName();
-            if (!StringUtils.isEmpty(hn)) {
-                logger.info("Using inferred hostname " + hn);
-                this.hostName = hn;
+        this.hostName = readJVMParam(HOST_NAME);
+        if (this.hostName == null) {
+            this.hostName = getLocalHostName();
+            if (!StringUtils.isEmpty(this.hostName)) {
+                logger.info("Using inferred hostname " + this.hostName);
             }
         }
     }
@@ -92,16 +87,4 @@ public class Context {
         }
         return hostname;
     }
-
-//    // just for testing
-//    protected void clear() {
-//        this.hostName = null;
-//        this.configPath = null;
-//        this.env = null;
-//    }
-//
-//    // just for testing
-//    protected void reInit() {
-//        init();
-//    }
 }
