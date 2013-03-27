@@ -24,7 +24,7 @@ public class FileConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(FileConfig.class);
 
-    private static final int REFRESH_DELAY_IN_SECONDS = 15;
+    public static final int REFRESH_DELAY_IN_SECONDS = 15;
     private static final String SEPARATOR = ".";
 
     private CompositeConfiguration configuration = new CompositeConfiguration();
@@ -43,41 +43,41 @@ public class FileConfig {
                     PropertiesConfiguration pc = new PropertiesConfiguration(fileUrl);
                     pc.setReloadingStrategy(getReloadingStrategy());
                     configuration.addConfiguration(pc);
-                    logger.info("Using configPath-based config file " + fn);
+                    logger.info("Loading config file " + fn);
                 } catch (ConfigurationException e) {
-                    logger.error("Could not use configPath-based config file " + fn, e);
+                    logger.error("Config file " + fn + " not found");
                 }
             }
         }
+        // hostname-prefixed filename on classpath
         if (Context.getInstance().hasHostName()) {
-            final String fn = Context.getInstance().getHostName() + SEPARATOR + filename;
-            try {
-                PropertiesConfiguration pc = new PropertiesConfiguration(fn);
-                pc.setReloadingStrategy(getReloadingStrategy());
-                configuration.addConfiguration(pc);
-                logger.info("Using hostname-based config file " + fn);
-            } catch (ConfigurationException e) {
-                logger.error("Could not use hostname-based config file " + fn, e);
-            }
+            final String contextFilename = Context.getInstance().getHostName() + SEPARATOR + filename;
+            addToCompositeConfig(contextFilename, false);
         }
+        // env-prefixed filename on classpath
         if (Context.getInstance().hasEnv()) {
-            final String fn = Context.getInstance().getEnv() + SEPARATOR + filename;
-            try {
-                PropertiesConfiguration pc = new PropertiesConfiguration(fn);
-                pc.setReloadingStrategy(getReloadingStrategy());
-                configuration.addConfiguration(pc);
-                logger.info("Using env-based config file " + fn);
-            } catch (ConfigurationException e) {
-                logger.error("Could not use env-based config file " + fn, e);
-            }
+            final String contextFilename = Context.getInstance().getEnv() + SEPARATOR + filename;
+            addToCompositeConfig(contextFilename, false);
         }
+        // filename on classpath
+        addToCompositeConfig(filename,
+                !Context.getInstance().hasConfigPath() &&
+                !Context.getInstance().hasHostName() &&
+                !Context.getInstance().hasEnv());
+    }
+
+    private void addToCompositeConfig(String filename, boolean logWithThrowable) {
         try {
             PropertiesConfiguration pc = new PropertiesConfiguration(filename);
             pc.setReloadingStrategy(getReloadingStrategy());
             configuration.addConfiguration(pc);
-            logger.info("Using config file " + filename);
+            logger.info("Loaded config file " + filename + " on the classpath");
         } catch (ConfigurationException e) {
-            logger.error("Could not use config file " + filename, e);
+            if (logWithThrowable) {
+                logger.error("Config file " + filename + " not found on classpath", e);
+            } else {
+                logger.error("Config file " + filename + " not found on classpath");
+            }
         }
     }
 

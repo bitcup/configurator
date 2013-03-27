@@ -1,6 +1,7 @@
 package com.bitcup.configurator;
 
-import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -12,23 +13,27 @@ import java.util.List;
 import static org.testng.AssertJUnit.*;
 
 /**
+ * todo: add reload
  * User: omar
  */
-public class FileConfigTest {
+public class FileConfigTest extends BaseTest {
 
-    private File f;
+    private static final Logger logger = LoggerFactory.getLogger(FileConfig.class);
+
+    private File localConfigFile;
 
     @BeforeMethod
     public void setUp() throws Exception {
         Context.getInstance().env = null;
         Context.getInstance().hostName = null;
         Context.getInstance().configPath = null;
-        f = createTestConfig();
+        final File testConfigFile = createTestConfigFile("/temp/configurator/project.properties");
+        localConfigFile = writeToTestConfig(testConfigFile, true, "comp1.propInt=0");
     }
 
     @AfterMethod
     public void tearDown() throws Exception {
-        deleteTestConfig(f);
+        deleteTestConfig(localConfigFile);
     }
 
     @Test(enabled = true)
@@ -150,7 +155,7 @@ public class FileConfigTest {
         // localhost, dev and configPath context
         Context.getInstance().hostName = "localhost";
         Context.getInstance().env = "dev";
-        Context.getInstance().configPath = f.getParent();
+        Context.getInstance().configPath = localConfigFile.getParent();
 
         // load config
         FileConfig config = new FileConfig("project.properties");
@@ -163,15 +168,5 @@ public class FileConfigTest {
         List<String> l = new ArrayList<String>();
         l.add("item3");
         assertEquals(l, config.getList("comp2.propList"));
-    }
-
-    private File createTestConfig() throws Exception {
-        File file = new File("/Users/obaba/temp/configurator/project.properties");
-        FileUtils.write(file, "comp1.propInt=0");
-        return file;
-    }
-
-    private void deleteTestConfig(File file) throws Exception {
-        FileUtils.forceDelete(file);
     }
 }
