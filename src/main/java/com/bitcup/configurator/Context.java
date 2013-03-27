@@ -51,10 +51,10 @@ public class Context {
     private String readJVMParam(String param) {
         String value = System.getProperty(param);
         if (!StringUtils.isEmpty(value)) {
-            logger.info("Using JVM command line parameter '" + param + "' " + value);
+            logger.info("Using JVM command line parameter '" + param + "' with value: " + value);
             return value;
         } else {
-            logger.warn("JVM command line parameter '" + param + "' unspecified");
+            logger.warn("JVM command line parameter '" + param + "' is unspecified");
             return null;
         }
     }
