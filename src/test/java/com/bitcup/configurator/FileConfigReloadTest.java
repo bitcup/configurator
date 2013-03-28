@@ -52,8 +52,8 @@ public class FileConfigReloadTest extends BaseTest {
 
         // change value and wait until config file in reloaded
         localConfigFile = writeToTestConfig(localConfigFile, false, "comp1.propInt=100");
-        logger.info("waiting " + FileConfig.REFRESH_DELAY_IN_SECONDS + " secs while config is refreshed...");
-        Thread.sleep(TimeUnit.SECONDS.toMillis(FileConfig.REFRESH_DELAY_IN_SECONDS + 1));
+        logger.info("waiting " + FileConfig.DEFAULT_REFRESH_DELAY_IN_SECONDS + " secs while config is refreshed...");
+        Thread.sleep(TimeUnit.SECONDS.toMillis(FileConfig.DEFAULT_REFRESH_DELAY_IN_SECONDS + 1));
 
         assertEquals(100, (int) config.getInt("comp1.propInt"));
     }

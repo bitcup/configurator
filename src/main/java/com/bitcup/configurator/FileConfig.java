@@ -41,17 +41,38 @@ public class FileConfig {
 
     private static final Logger logger = LoggerFactory.getLogger(FileConfig.class);
 
-    public static final int REFRESH_DELAY_IN_SECONDS = 15;
+    public static final int DEFAULT_REFRESH_DELAY_IN_SECONDS = 15;
     private static final String SEPARATOR = ".";
 
     protected CompositeConfiguration configuration = new CompositeConfiguration();
+    private int refreshDelaySecs = DEFAULT_REFRESH_DELAY_IN_SECONDS;
 
     /**
      * Loads configuration properties file at the local, host, env and base levels.
      *
+     * The configuration files are refreshed at the default refresh delay value
+     * {@value #DEFAULT_REFRESH_DELAY_IN_SECONDS}.
+     *
      * @param filename name of the properties file to load
      */
     public FileConfig(String filename) {
+        createCompositeConfiguration(filename);
+    }
+
+    /**
+     * Loads configuration properties file at the local, host, env and base levels
+     * and sets the refresh delay on the
+     * {@link org.apache.commons.configuration.reloading.FileChangedReloadingStrategy}.
+     *
+     * @param filename name of the properties file to load
+     * @param refreshDelaySecs refresh delay in seconds
+     */
+    public FileConfig(String filename, int refreshDelaySecs) {
+        this.refreshDelaySecs = refreshDelaySecs;
+        createCompositeConfiguration(filename);
+    }
+
+    private void createCompositeConfiguration(String filename) {
         if (Context.getInstance().hasConfigPath()) {
             final String fn = Context.getInstance().getConfigPath() + File.separator + filename;
             URL fileUrl = ConfigurationUtils.locate(fn);
@@ -105,7 +126,7 @@ public class FileConfig {
 
     private FileChangedReloadingStrategy getReloadingStrategy() {
         final FileChangedReloadingStrategy reloadingStrategy = new FileChangedReloadingStrategy();
-        reloadingStrategy.setRefreshDelay(TimeUnit.SECONDS.toMillis(REFRESH_DELAY_IN_SECONDS));
+        reloadingStrategy.setRefreshDelay(TimeUnit.SECONDS.toMillis(this.refreshDelaySecs));
         return reloadingStrategy;
     }
 
