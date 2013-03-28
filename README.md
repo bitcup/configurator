@@ -13,9 +13,10 @@ Features:
 - Developers can check-in different versions of the application config files based on environment/host (ex: staging.awesomeApp.properties) without worrying about affecting production configs
 - Overriding properties is as easy as adding new values for same properties in different contexts (env/host)
 - Reusing base property values is as easy as commenting out environment/host specific ones
-    comment out host-based prop ==> pickup env-based
-    comment out env-based ==> pickup base
-- Supports Spring and servlet environments
+    - comment out host-based prop ==> pickup env-based
+    - comment out env-based ==> pickup base
+- Supports Spring's PropertyPlaceholderConfigurer for dynamically configuring spring beans via placeholders
+- Supports integration with ServletContextListener to make configs available inside JSPs via JSTL/EL notation like ${map[key]}
 
 Use Cases:
 ==========
