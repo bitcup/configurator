@@ -8,8 +8,22 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 /**
- * Singleton
- *
+ * Singleton used to store metadata about the java process,
+ * passed as JVM parameters, consisting of the following:
+ * <p/>
+ * env
+ * hostName
+ * configPath
+ * <p/>
+ * These properties can be used by the java process in order
+ * to implement environment/host specific logic.  They are also
+ * used in {@link com.bitcup.configurator.FileConfig} classes in
+ * order to detect configuration at different layers.
+ * <p/>
+ * env and configPath are determined exclusively from JVM parameters.
+ * hostName is determined first from the JVM parameter -DhostName, but
+ * if missing, then from {@link java.net.InetAddress#getLocalHost()}.
+ * <p/>
  * User: omar
  */
 public class Context {

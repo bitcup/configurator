@@ -14,10 +14,27 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Loads configuration from a properties file on the classpath or in a context's config path.
+ * Loads a refreshable {@link org.apache.commons.configuration.CompositeConfiguration}
+ * from several properties files specified via a common name.  The properties files
+ * represent different layers of configuration meant to provide flexibility, for example,
+ * enabling overrides of a property values for different environments and or hosts.
  * <p/>
- * TODO: RuntimeException instead of ConfigException?
- * TODO: for spring, create separate class (SpringFileConfig)
+ * The layers consist of the following order:
+ * <p/>
+ * 1) local:    loads filename relative to a user-specified configuration path
+ * 2) host:     loads <host>.filename from the classpath
+ * 3) env:      loads <env>.filename from the classpath
+ * 4) base:     loads filename from the classpath
+ * <p/>
+ * Based on the order above, properties in 'dev.app.properties' configuration file would
+ * override the same properties in 'app.properties', assuming both files exist on the
+ * classpath.
+ * <p/>
+ * Host, env and local config path are provided by {@link com.bitcup.configurator.Context}.
+ * For example, if {@link com.bitcup.configurator.Context#hasConfigPath()} is '/usr/local',
+ * then properties in '/usr/local/app.properties' would override those in 'app.properties'
+ * on the classpath.
+ * <p/>
  * User: omar
  */
 public class FileConfig {
@@ -27,10 +44,10 @@ public class FileConfig {
     public static final int REFRESH_DELAY_IN_SECONDS = 15;
     private static final String SEPARATOR = ".";
 
-    private CompositeConfiguration configuration = new CompositeConfiguration();
+    protected CompositeConfiguration configuration = new CompositeConfiguration();
 
     /**
-     * Loads config properties file
+     * Loads configuration properties file at the local, host, env and base levels.
      *
      * @param filename name of the properties file to load
      */
@@ -64,8 +81,8 @@ public class FileConfig {
         // filename on classpath
         addToCompositeConfig(filename,
                 !Context.getInstance().hasConfigPath() &&
-                !Context.getInstance().hasHostName() &&
-                !Context.getInstance().hasEnv());
+                        !Context.getInstance().hasHostName() &&
+                        !Context.getInstance().hasEnv());
     }
 
     private void addToCompositeConfig(String filename, boolean logWithThrowable) {
