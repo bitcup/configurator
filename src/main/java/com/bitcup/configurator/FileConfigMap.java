@@ -1,3 +1,22 @@
+/*
+ * Copyright (c) 2013 bitcup
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial
+ * portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package com.bitcup.configurator;
 
 import org.apache.commons.configuration.ConfigurationMap;
@@ -20,12 +39,28 @@ public class FileConfigMap extends FileConfig {
     /**
      * Loads configuration properties file at the local, host, env and base levels
      * and exposes them as a {@link java.util.Map}.
+     * <p/>
+     * Configuration is refreshed at the default refresh delay value of
+     * {@value #DEFAULT_REFRESH_DELAY_IN_SECONDS}.
      *
      * @param filename name of the properties file to load
      */
     public FileConfigMap(String filename) {
         super(filename);
-        map = new ConfigurationMap(this.configuration);
+        this.map = new ConfigurationMap(this.configuration);
+    }
+
+    /**
+     * Loads configuration properties file at the local, host, env and base levels
+     * and exposes them as a {@link java.util.Map}.  Sets the refresh delay on the
+     * {@link org.apache.commons.configuration.reloading.FileChangedReloadingStrategy}.
+     *
+     * @param filename         name of the properties file to load
+     * @param refreshDelaySecs refresh delay in seconds
+     */
+    public FileConfigMap(String filename, int refreshDelaySecs) {
+        super(filename, refreshDelaySecs);
+        this.map = new ConfigurationMap(this.configuration);
     }
 
     public Map getMap() {
