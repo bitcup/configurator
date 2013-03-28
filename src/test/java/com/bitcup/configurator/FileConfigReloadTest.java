@@ -58,4 +58,26 @@ public class FileConfigReloadTest extends BaseTest {
         assertEquals(100, (int) config.getInt("comp1.propInt"));
     }
 
+    @Test(enabled = true)
+    public void testReloadFaster() throws Exception {
+        // configPath context
+        Context.getInstance().configPath = localConfigFile.getParent();
+
+        // load config
+        FileConfig config = new FileConfig("reload.properties", 5);
+        assertNotNull(config);
+
+        // initial value
+        assertEquals(0, (int) config.getInt("comp1.propInt"));
+
+        // this is needed to make the test work!
+        Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+
+        // change value and wait until config file in reloaded
+        localConfigFile = writeToTestConfig(localConfigFile, false, "comp1.propInt=100");
+        logger.info("waiting " + 5 + " secs while config is refreshed...");
+        Thread.sleep(TimeUnit.SECONDS.toMillis(5 + 1));
+
+        assertEquals(100, (int) config.getInt("comp1.propInt"));
+    }
 }
