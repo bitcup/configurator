@@ -50,7 +50,7 @@ public class FileConfig {
     /**
      * Loads configuration properties file at the local, host, env and base levels.
      *
-     * The configuration files are refreshed at the default refresh delay value
+     * Configuration is refreshed at the default refresh delay value of
      * {@value #DEFAULT_REFRESH_DELAY_IN_SECONDS}.
      *
      * @param filename name of the properties file to load
