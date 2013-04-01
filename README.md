@@ -31,3 +31,15 @@ Use Cases:
 - option 1: use local context (config path outside of project) ==> will not interfere with deployed war/jar
 - option 2: use host context configuration (packaged with war/jar) ==> will only impact specific hosts
 
+Examples:
+=========
+
+// load properties file app.properties and refresh every 10 seconds
+FileConfig fileConfig = new FileConfig("app.properties", 10);
+
+// read string property 'app.value' and use 'UNKNOWN' as default
+String value = fileConfig.getString("app.value", "UNKNOWN");
+
+
+License: MIT
+
